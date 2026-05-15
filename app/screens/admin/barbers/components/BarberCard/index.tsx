@@ -54,7 +54,7 @@ export default function BarberCard({ barber, barbershopId }: IBarberCard) {
                 router.push({
                   pathname: "/(admin)/barber/update/[id]",
                   params: {
-                    barbershopId: barbershopId,
+                    id: barbershopId,
                     barberId: barber.id,
                   },
                 })

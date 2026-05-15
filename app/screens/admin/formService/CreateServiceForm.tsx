@@ -1,7 +1,12 @@
 import { useCreateService } from "@/app/hooks/mutations/createService";
+import { useUpdateService } from "@/app/hooks/mutations/updateService";
+import { useGetServiceById } from "@/app/hooks/queries/getServiceById";
 import { uploadToS3 } from "@/app/lib/uploadToS3";
+import { ThemedText } from "@/components/themed-text";
+import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
@@ -16,14 +21,28 @@ import { CreateServiceFormData, createServiceSchema } from "./schema";
 
 interface ICreateServiceFormProps {
   barberId: string;
+  serviceId?: string;
 }
 
-export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
+export function CreateServiceForm({
+  barberId,
+  serviceId,
+}: ICreateServiceFormProps) {
+  const isEdit = !!serviceId;
+  const { data: service, isLoading } = useGetServiceById(
+    serviceId ?? "",
+    barberId,
+  );
+  const { mutateAsync: updateService, isPending: isPendingUpdate } =
+    useUpdateService();
   const { mutateAsync, isPending } = useCreateService();
+
+  const loading = isPending || isPendingUpdate;
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<CreateServiceFormData>({
     resolver: zodResolver(createServiceSchema),
     defaultValues: {
@@ -36,11 +55,47 @@ export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
     },
   });
 
+  useEffect(() => {
+    if (service?.service) {
+      const data = service.service;
+      reset({
+        barberId,
+        duration: String(data.duration),
+        file: undefined,
+        isActive: data.isActive,
+        name: data.name,
+        price: String(data.price),
+      });
+    }
+  }, [barberId, reset, service]);
+
   async function onSubmit(data: CreateServiceFormData) {
     if (!data.barberId || !data.name || !data.duration || !data.price) {
       return;
     }
     try {
+      if (isEdit && serviceId) {
+        const { uploadSignature } = await updateService({
+          barberId,
+          serviceId,
+          dataService: {
+            duration: Number(data.duration),
+            file: data.file,
+            isActive: data.isActive,
+            name: data.name,
+            price: Number(data.price),
+          },
+        });
+        if (uploadSignature && data.file) {
+          await uploadToS3(uploadSignature, data.file);
+        }
+
+        return router.push({
+          pathname: "/(admin)/barbershop/services/[id]",
+          params: { id: barberId },
+        });
+      }
+
       const { uploadSignature } = await mutateAsync({
         dataService: {
           barberId: barberId,
@@ -63,9 +118,11 @@ export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
       console.log(err);
     }
   }
-
+  if (isEdit && isLoading) {
+    return <ThemedText>Carregando...</ThemedText>;
+  }
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView
         style={{
           flex: 1,
@@ -74,6 +131,19 @@ export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
           justifyContent: "center",
         }}
       >
+        <View style={{ flexDirection: "row", gap: 5 }}>
+          <Pressable
+            style={{ flexDirection: "row", gap: 5 }}
+            onPress={() =>
+              router.push({
+                pathname: "/(admin)/(tabs)/dashboard",
+              })
+            }
+          >
+            <Ionicons name="arrow-back" size={25} color="hsl(210 100% 55%)" />
+          </Pressable>
+        </View>
+
         {/* TITLE */}
         <View style={{ gap: 4 }}>
           <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
@@ -184,7 +254,7 @@ export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
         {/* BOTÃO */}
         <Pressable
           onPress={handleSubmit(onSubmit)}
-          disabled={isPending}
+          disabled={loading}
           style={({ pressed }) => [
             {
               backgroundColor: "hsl(210 100% 55%)",
@@ -197,7 +267,11 @@ export function CreateServiceForm({ barberId }: ICreateServiceFormProps) {
           ]}
         >
           <Text style={{ color: "#000", fontWeight: "bold" }}>
-            {isPending ? "Cadastrando serviço" : "Cadastrar serviço"}
+            {loading
+              ? "Salvando..."
+              : isEdit
+                ? "Atualizar Serviço"
+                : "Cadastrar Serviço"}
           </Text>
         </Pressable>
       </SafeAreaView>

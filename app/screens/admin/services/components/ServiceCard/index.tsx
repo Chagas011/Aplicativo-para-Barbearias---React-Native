@@ -5,6 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Switch, View } from "react-native";
 
 import { Service } from "@/app/types/Service";
+import { router } from "expo-router";
 
 interface IServiceCard {
   service: Service;
@@ -25,7 +26,17 @@ export default function ServiceCard({ service }: IServiceCard) {
           {service.name}
         </ThemedText>
 
-        <Pressable>
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: "/(admin)/service/update/[id]",
+              params: {
+                id: service.barberId,
+                serviceId: service.id,
+              },
+            })
+          }
+        >
           <Ionicons name="create-outline" size={20} color="#ccc" />
         </Pressable>
       </View>

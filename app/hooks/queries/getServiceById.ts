@@ -1,4 +1,4 @@
-import { getServiceById } from "@/app/services/client/gerServiceById";
+import { getServiceById } from "@/app/services/client/getServiceById";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetServiceById(serviceId: string, barberId: string) {

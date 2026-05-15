@@ -1,6 +1,6 @@
 export interface Service {
   id: string;
-  barberShopId: string;
+  barberId: string;
   name: string;
   duration: number;
   price: number;
