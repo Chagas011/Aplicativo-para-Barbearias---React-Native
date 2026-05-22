@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useListBarbershop } from "@/app/hooks/queries/useListBarbershop";
 import { useAuthStore } from "@/app/store/auth";
+import LoadingPulse from "@/components/loading";
 import BarberShopCard from "./Components/BarberShopCard";
 import Search from "./Components/Search";
 import { styles } from "./styles";
@@ -18,7 +19,7 @@ export default function HomeScreen() {
   if (isLoading || !data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }
@@ -28,12 +29,15 @@ export default function HomeScreen() {
       barber.name.toLowerCase().includes(search.toLowerCase()) ||
       barber.address.street.toLowerCase().includes(search.toLowerCase()),
   );
+
   return (
     <SafeAreaView style={{ marginBottom: 70 }}>
-      <View>
+      <View
+        style={{ flexDirection: "row-reverse", padding: 5, marginRight: 10 }}
+      >
         <Pressable
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "hsl(210 100% 15%)",
             width: 80,
             height: 30,
             borderRadius: 8,
@@ -42,7 +46,7 @@ export default function HomeScreen() {
           }}
           onPress={logout}
         >
-          <ThemedText style={{ color: "#000" }}>Sair</ThemedText>
+          <ThemedText style={{ color: "white" }}>Sair</ThemedText>
         </Pressable>
       </View>
       <ThemedView style={styles.header}>
@@ -84,9 +88,24 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ marginTop: 30, gap: 10, padding: 10 }}
       >
-        {filteredBarbers?.map((barber) => (
-          <BarberShopCard barber={barber} key={barber.id} />
-        ))}
+        {filteredBarbers.length > 0 ? (
+          filteredBarbers?.map((barber) => (
+            <BarberShopCard barber={barber} key={barber.id} />
+          ))
+        ) : (
+          <View>
+            <ThemedText
+              style={{
+                color: "#9ca3af",
+                textAlign: "center",
+                fontSize: 15,
+                lineHeight: 22,
+              }}
+            >
+              Nenhuma barbearia encontrada...
+            </ThemedText>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

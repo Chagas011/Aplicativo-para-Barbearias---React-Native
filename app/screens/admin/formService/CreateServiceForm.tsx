@@ -2,7 +2,7 @@ import { useCreateService } from "@/app/hooks/mutations/createService";
 import { useUpdateService } from "@/app/hooks/mutations/updateService";
 import { useGetServiceById } from "@/app/hooks/queries/getServiceById";
 import { uploadToS3 } from "@/app/lib/uploadToS3";
-import { ThemedText } from "@/components/themed-text";
+import LoadingPulse from "@/components/loading";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -10,7 +10,10 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   TouchableWithoutFeedback,
@@ -119,162 +122,196 @@ export function CreateServiceForm({
     }
   }
   if (isEdit && isLoading) {
-    return <ThemedText>Carregando...</ThemedText>;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <LoadingPulse />
+      </View>
+    );
   }
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          padding: 20,
-          gap: 20,
-          justifyContent: "center",
-        }}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{ flexDirection: "row", gap: 5, padding: 10, marginTop: 20 }}
       >
-        <View style={{ flexDirection: "row", gap: 5 }}>
-          <Pressable
-            style={{ flexDirection: "row", gap: 5 }}
-            onPress={() =>
-              router.push({
-                pathname: "/(admin)/(tabs)/dashboard",
-              })
-            }
-          >
-            <Ionicons name="arrow-back" size={25} color="hsl(210 100% 55%)" />
-          </Pressable>
-        </View>
-
-        {/* TITLE */}
-        <View style={{ gap: 4 }}>
-          <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
-            Novo serviço
-          </Text>
-          <Text style={{ color: "gray" }}>
-            Cadastre um serviço para sua barbearia
-          </Text>
-        </View>
-
-        {/* NOME */}
-        <View style={{ gap: 6 }}>
-          <Text style={{ color: "gray", fontSize: 12 }}>Nome do serviço</Text>
-
-          <Controller
-            control={control}
-            name="name"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholder="Ex: Corte + barba"
-                value={value}
-                onChangeText={onChange}
-                style={{
-                  borderWidth: 1,
-                  borderColor: errors.name ? "#ff4d4d" : "#333",
-                  color: "#fff",
-                  padding: 14,
-                  borderRadius: 10,
-                  backgroundColor: "#121212",
-                }}
-              />
-            )}
-          />
-
-          {errors.name && (
-            <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
-              {errors.name.message}
-            </Text>
-          )}
-        </View>
-
-        {/* PREÇO */}
-        <View style={{ gap: 6 }}>
-          <Text style={{ color: "gray", fontSize: 12 }}>Preço</Text>
-
-          <Controller
-            control={control}
-            name="price"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholder="R$ 0,00"
-                keyboardType="numeric"
-                value={value}
-                onChangeText={onChange}
-                style={{
-                  borderWidth: 1,
-                  borderColor: errors.price ? "#ff4d4d" : "#333",
-                  color: "#fff",
-                  padding: 14,
-                  borderRadius: 10,
-                  backgroundColor: "#121212",
-                }}
-              />
-            )}
-          />
-
-          {errors.price && (
-            <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
-              {errors.price.message}
-            </Text>
-          )}
-        </View>
-
-        {/* DURAÇÃO */}
-        <View style={{ gap: 6 }}>
-          <Text style={{ color: "gray", fontSize: 12 }}>Duração</Text>
-
-          <Controller
-            control={control}
-            name="duration"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholder="Ex: 30"
-                keyboardType="numeric"
-                value={value}
-                onChangeText={onChange}
-                style={{
-                  borderWidth: 1,
-                  borderColor: errors.duration ? "#ff4d4d" : "#333",
-                  color: "#fff",
-                  padding: 14,
-                  borderRadius: 10,
-                  backgroundColor: "#121212",
-                }}
-              />
-            )}
-          />
-
-          <Text style={{ color: "gray", fontSize: 11 }}>Tempo em minutos</Text>
-
-          {errors.duration && (
-            <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
-              {errors.duration.message}
-            </Text>
-          )}
-        </View>
-
-        {/* BOTÃO */}
         <Pressable
-          onPress={handleSubmit(onSubmit)}
-          disabled={loading}
-          style={({ pressed }) => [
-            {
-              backgroundColor: "hsl(210 100% 55%)",
-              padding: 16,
-              borderRadius: 12,
-              alignItems: "center",
-              marginTop: 10,
-              opacity: pressed ? 0.8 : 1,
-            },
-          ]}
+          style={{ flexDirection: "row", gap: 5 }}
+          onPress={() =>
+            router.push({
+              pathname: "/(admin)/(tabs)/dashboard",
+            })
+          }
         >
-          <Text style={{ color: "#000", fontWeight: "bold" }}>
-            {loading
-              ? "Salvando..."
-              : isEdit
-                ? "Atualizar Serviço"
-                : "Cadastrar Serviço"}
-          </Text>
+          <Ionicons name="arrow-back" size={25} color="hsl(210 100% 55%)" />
         </Pressable>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingBottom: 40,
+              paddingHorizontal: 20,
+            }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View
+              style={{
+                paddingTop: 90,
+                gap: 12,
+                justifyContent: "center",
+              }}
+            >
+              {/* TITLE */}
+              <View style={{ gap: 4 }}>
+                <Text
+                  style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}
+                >
+                  Novo serviço
+                </Text>
+                <Text style={{ color: "gray" }}>
+                  Cadastre um serviço para sua barbearia
+                </Text>
+              </View>
+
+              {/* NOME */}
+              <View style={{ gap: 6 }}>
+                <Text style={{ color: "gray", fontSize: 12 }}>
+                  Nome do serviço
+                </Text>
+
+                <Controller
+                  control={control}
+                  name="name"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      placeholder="Ex: Corte + barba"
+                      value={value}
+                      onChangeText={onChange}
+                      placeholderTextColor="#777"
+                      style={{
+                        borderWidth: 1,
+                        borderColor: errors.price ? "#ff4d4d" : "#333",
+
+                        color: "#fff",
+                        padding: 14,
+                        borderRadius: 12,
+                        backgroundColor: "#121212",
+                      }}
+                    />
+                  )}
+                />
+
+                {errors.name && (
+                  <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
+                    {errors.name.message}
+                  </Text>
+                )}
+              </View>
+
+              {/* PREÇO */}
+              <View style={{ gap: 6 }}>
+                <Text style={{ color: "gray", fontSize: 12 }}>Preço</Text>
+
+                <Controller
+                  control={control}
+                  name="price"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      placeholder="R$ 0,00"
+                      keyboardType="numeric"
+                      value={value}
+                      onChangeText={onChange}
+                      placeholderTextColor="#777"
+                      style={{
+                        borderWidth: 1,
+                        borderColor: errors.price ? "#ff4d4d" : "#333",
+
+                        color: "#fff",
+                        padding: 14,
+                        borderRadius: 12,
+                        backgroundColor: "#121212",
+                      }}
+                    />
+                  )}
+                />
+
+                {errors.price && (
+                  <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
+                    {errors.price.message}
+                  </Text>
+                )}
+              </View>
+
+              {/* DURAÇÃO */}
+              <View style={{ gap: 6 }}>
+                <Text style={{ color: "gray", fontSize: 12 }}>Duração</Text>
+
+                <Controller
+                  control={control}
+                  name="duration"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      placeholder="Ex: 30"
+                      keyboardType="numeric"
+                      value={value}
+                      onChangeText={onChange}
+                      placeholderTextColor="#777"
+                      style={{
+                        borderWidth: 1,
+                        borderColor: errors.price ? "#ff4d4d" : "#333",
+
+                        color: "#fff",
+                        padding: 14,
+                        borderRadius: 12,
+                        backgroundColor: "#121212",
+                      }}
+                    />
+                  )}
+                />
+
+                <Text style={{ color: "gray", fontSize: 11 }}>
+                  Tempo em minutos
+                </Text>
+
+                {errors.duration && (
+                  <Text style={{ color: "#ff4d4d", fontSize: 12 }}>
+                    {errors.duration.message}
+                  </Text>
+                )}
+              </View>
+
+              {/* BOTÃO */}
+              <Pressable
+                onPress={handleSubmit(onSubmit)}
+                disabled={loading}
+                style={({ pressed }) => [
+                  {
+                    backgroundColor: "hsl(210 100% 55%)",
+                    padding: 16,
+                    borderRadius: 12,
+                    alignItems: "center",
+                    marginTop: 10,
+                    opacity: pressed ? 0.8 : 1,
+                  },
+                ]}
+              >
+                <Text style={{ color: "#000", fontWeight: "bold" }}>
+                  {loading
+                    ? "Salvando..."
+                    : isEdit
+                      ? "Atualizar Serviço"
+                      : "Cadastrar Serviço"}
+                </Text>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

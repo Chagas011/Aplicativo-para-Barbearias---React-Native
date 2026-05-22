@@ -1,4 +1,5 @@
 import { useListBarbershopByAccount } from "@/app/hooks/queries/admin/useListBarbershopByAccount";
+import LoadingPulse from "@/components/loading";
 import { ThemedText } from "@/components/themed-text";
 import { router } from "expo-router";
 import { Pressable, ScrollView, View } from "react-native";
@@ -10,7 +11,7 @@ export default function DashboardScreen() {
   if (isLoading || !data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }
@@ -41,7 +42,9 @@ export default function DashboardScreen() {
         <Header />
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 10, gap: 10 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 10, gap: 10, paddingBottom: 50 }}
+      >
         {data.barberShop.map((barbershop) => (
           <BarbershopCard barbershop={barbershop} key={barbershop.id} />
         ))}

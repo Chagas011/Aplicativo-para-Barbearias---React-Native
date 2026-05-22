@@ -5,7 +5,9 @@ import { Pressable, View } from "react-native";
 import { ScheduleFormData, scheduleSchema } from "./schema";
 
 import { ThemedText } from "@/components/themed-text";
+import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import Barber from "./Barber";
 import Confirm from "./Confirm";
 import Date from "./Date";
@@ -51,6 +53,18 @@ export default function MultiStepForm({ barbershopId }: IMultiStepFormProps) {
   return (
     <FormProvider {...form}>
       <View style={{ flex: 1, padding: 20 }}>
+        <View style={{ flexDirection: "row", gap: 5 }}>
+          <Pressable
+            style={{ flexDirection: "row", gap: 5 }}
+            onPress={() =>
+              router.push({
+                pathname: "/(client)/(tabs)",
+              })
+            }
+          >
+            <Ionicons name="arrow-back" size={25} color="hsl(210 100% 55%)" />
+          </Pressable>
+        </View>
         <View style={{ flex: 1 }}>
           {step === 1 && <Barber barbershopId={barbershopId} />}
           {step === 2 && <Service />}

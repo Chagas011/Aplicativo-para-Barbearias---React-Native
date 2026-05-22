@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 
 import { useListBarberByBarbershop } from "@/app/hooks/queries/useListBarberByBarbershop";
+import LoadingPulse from "@/components/loading";
 import CardBarber from "../CardBarber";
 import { ScheduleFormData } from "./schema";
 interface IBarberProps {
@@ -27,7 +28,7 @@ export default function Barber({ barbershopId }: IBarberProps) {
   if (isLoading || !data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }

@@ -63,11 +63,6 @@ export default function BarbershopCard({ barbershop }: IBarberShopCard) {
           }}
         >
           <View>
-            <View style={styles.services}>
-              <View style={styles.tag}>
-                <ThemedText style={styles.tagText}>Corte</ThemedText>
-              </View>
-            </View>
             <View
               style={{
                 flexDirection: "row",
@@ -77,7 +72,11 @@ export default function BarbershopCard({ barbershop }: IBarberShopCard) {
                 gap: 5,
               }}
             >
-              <Ionicons name="location-outline" size={16} color="white" />
+              <Ionicons
+                name="location-outline"
+                size={16}
+                color="hsl(210 100% 55%)"
+              />
               <ThemedText>{barbershop.address.street}</ThemedText>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -89,7 +88,11 @@ export default function BarbershopCard({ barbershop }: IBarberShopCard) {
                   gap: 5,
                 }}
               >
-                <Octicons name="stopwatch" size={16} color="#00d5ff96" />
+                <Octicons
+                  name="stopwatch"
+                  size={16}
+                  color="hsl(210 100% 55%)"
+                />
                 <ThemedText>{barbershop.openingHours[0].open}</ThemedText>
                 <ThemedText>{barbershop.openingHours[0].close}</ThemedText>
               </View>
@@ -104,7 +107,11 @@ export default function BarbershopCard({ barbershop }: IBarberShopCard) {
                   alignItems: "center",
                 }}
               >
-                <Ionicons name="logo-whatsapp" size={18} color="green" />
+                <Ionicons
+                  name="logo-whatsapp"
+                  size={16}
+                  color="hsl(210 100% 55%)"
+                />
                 <ThemedText>{barbershop.phone}</ThemedText>
               </View>
               {barbershop.socialMedia.map((socialMedia) => (
@@ -117,7 +124,11 @@ export default function BarbershopCard({ barbershop }: IBarberShopCard) {
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesome name="instagram" size={16} color="purple" />
+                  <FontAwesome
+                    name="instagram"
+                    size={16}
+                    color="hsl(210 100% 55%)"
+                  />
                   <ThemedText>{socialMedia.name}</ThemedText>
                 </View>
               ))}

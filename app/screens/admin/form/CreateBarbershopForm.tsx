@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useGetBarbershopById } from "@/app/hooks/queries/useGetBarbershopById";
+import LoadingPulse from "@/components/loading";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -167,7 +168,11 @@ export default function CreateBarbershopForm({
   }, [barbershop, form]);
 
   if (isEdit && isLoading) {
-    return <ThemedText>Carregando...</ThemedText>;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <LoadingPulse />
+      </View>
+    );
   }
 
   return (

@@ -6,6 +6,7 @@ import { Image, Pressable, View } from "react-native";
 import { useCreateScheduling } from "@/app/hooks/mutations/createScheduling";
 import { useGetBarberById } from "@/app/hooks/queries/getBarberById";
 import { useGetServiceById } from "@/app/hooks/queries/getServiceById";
+import LoadingPulse from "@/components/loading";
 import { router } from "expo-router";
 import { ScheduleFormData } from "./schema";
 interface IConfirmProps {
@@ -48,7 +49,7 @@ export default function Confirm({ barbershopId }: IConfirmProps) {
   if (isLoading || !barberData) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }

@@ -1,4 +1,5 @@
 import { useListScheduling } from "@/app/hooks/queries/useListScheduling";
+import LoadingPulse from "@/components/loading";
 import { ThemedText } from "@/components/themed-text";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView, View } from "react-native";
@@ -7,11 +8,18 @@ import CardAgendamento from "./CardAgendamento";
 
 export default function AgendamentoScreen() {
   const { data, isLoading } = useListScheduling();
+  const today = new Date();
 
-  if (isLoading || !data) {
+  const upcomingScheduling = data?.scheduling.filter((scheduling) => {
+    const schedulingDate = new Date(scheduling.date);
+
+    return schedulingDate >= today;
+  });
+
+  if (isLoading || !upcomingScheduling) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }
@@ -46,15 +54,24 @@ export default function AgendamentoScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {data.scheduling.length === 0 && (
+        {upcomingScheduling.length === 0 && (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <ThemedText>Voce nao possui agendamentos</ThemedText>
+            <ThemedText
+              style={{
+                color: "#9ca3af",
+                textAlign: "center",
+                fontSize: 15,
+                lineHeight: 22,
+              }}
+            >
+              Você ainda não possui agendamentos...
+            </ThemedText>
           </View>
         )}
 
-        {data.scheduling.map((item) => (
+        {upcomingScheduling.map((item) => (
           <CardAgendamento scheduling={item} key={item.id} />
         ))}
       </ScrollView>

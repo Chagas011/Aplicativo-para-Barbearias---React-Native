@@ -4,6 +4,7 @@ import { Pressable, ScrollView, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
 import { useListAvailableTimes } from "@/app/hooks/queries/useListAvailableTimes";
+import LoadingPulse from "@/components/loading";
 import CardTime from "../CardTime";
 import { ScheduleFormData } from "./schema";
 
@@ -54,7 +55,7 @@ export default function Date({ barbershopId }: IDateProps) {
   if (isLoading || !data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }

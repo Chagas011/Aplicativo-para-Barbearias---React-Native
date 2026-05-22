@@ -67,7 +67,10 @@ export default function BarberCard({ barber, barbershopId }: IBarberCard) {
               onPress={() =>
                 router.push({
                   pathname: "/(admin)/barbershop/services/[id]",
-                  params: { id: barber.id },
+                  params: {
+                    id: barber.id,
+                    barbershopId: barbershopId,
+                  },
                 })
               }
             >

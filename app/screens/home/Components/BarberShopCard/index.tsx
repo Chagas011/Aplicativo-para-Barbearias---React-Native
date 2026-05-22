@@ -1,7 +1,6 @@
 import { Barbershop } from "@/app/types/Barbershop";
 import { Card, CardContent, CardHeader } from "@/components/Card";
 import { ThemedText } from "@/components/themed-text";
-import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
@@ -32,11 +31,6 @@ export default function BarberShopCard({ barber }: IBarberShopCard) {
       </CardHeader>
 
       <CardContent>
-        <View style={styles.services}>
-          <View style={styles.tag}>
-            <ThemedText style={styles.tagText}>Corte</ThemedText>
-          </View>
-        </View>
         <View
           style={{
             flexDirection: "row",
@@ -46,7 +40,11 @@ export default function BarberShopCard({ barber }: IBarberShopCard) {
             gap: 5,
           }}
         >
-          <Ionicons name="location-outline" size={16} color="white" />
+          <Ionicons
+            name="location-outline"
+            size={16}
+            color="hsl(210 100% 55%)"
+          />
           <ThemedText>{barber.address.street}</ThemedText>
         </View>
         <View style={{ flexDirection: "row" }}>
@@ -58,13 +56,13 @@ export default function BarberShopCard({ barber }: IBarberShopCard) {
               gap: 5,
             }}
           >
-            <Octicons name="stopwatch" size={16} color="#00d5ff96" />
-            <ThemedText>{barber.openingHours[0].open}</ThemedText>
+            <Octicons name="stopwatch" size={16} color="hsl(210 100% 55%)" />
+            <ThemedText>{barber.openingHours[0].open} -</ThemedText>
             <ThemedText>{barber.openingHours[0].close}</ThemedText>
           </View>
         </View>
 
-        <View style={{ flexDirection: "row" }}>
+        <View>
           <View
             style={{
               flexDirection: "row",
@@ -73,28 +71,38 @@ export default function BarberShopCard({ barber }: IBarberShopCard) {
               alignItems: "center",
             }}
           >
-            <Feather name="phone" size={16} color="green" />
+            <Ionicons
+              name="logo-whatsapp"
+              size={16}
+              color="hsl(210 100% 55%)"
+            />
             <ThemedText>{barber.phone}</ThemedText>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 5,
-              alignContent: "center",
-              alignItems: "center",
-              marginLeft: 10,
-            }}
-          >
-            <FontAwesome name="instagram" size={16} color="purple" />
-            <ThemedText>insta</ThemedText>
-          </View>
+          {barber.socialMedia.map((socialMedia) => (
+            <View
+              key={socialMedia.name}
+              style={{
+                flexDirection: "row",
+                gap: 5,
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome
+                name="instagram"
+                size={16}
+                color="hsl(210 100% 55%)"
+              />
+              <ThemedText>{socialMedia.name}</ThemedText>
+            </View>
+          ))}
         </View>
 
         <View style={{ flexDirection: "row-reverse", marginTop: 10 }}>
           <Pressable
             onPress={() =>
               router.push({
-                pathname: "/barbershop/[id]",
+                pathname: "/(client)/barbershop/[id]",
                 params: { id: barber.id },
               })
             }
@@ -103,7 +111,7 @@ export default function BarberShopCard({ barber }: IBarberShopCard) {
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
-            <Text style={styles.buttonText}>Reservar</Text>
+            <Text style={styles.buttonText}>Agendar</Text>
           </Pressable>
         </View>
       </CardContent>

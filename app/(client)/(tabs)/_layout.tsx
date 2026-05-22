@@ -38,6 +38,13 @@ export default function ClientTabsLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="barbershop"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

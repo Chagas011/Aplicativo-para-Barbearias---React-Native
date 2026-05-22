@@ -21,10 +21,12 @@ export const createBarbershopSchema = z.object({
   }),
   socialMedia: z
     .array(
-      z.object({
-        name: z.string().min(1),
-        url: z.string().min(1),
-      }),
+      z
+        .object({
+          name: z.string().min(1).optional(),
+          url: z.string().min(1).optional(),
+        })
+        .optional(),
     )
     .optional(),
   openingHours: z.array(

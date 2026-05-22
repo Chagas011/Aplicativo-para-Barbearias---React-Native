@@ -3,6 +3,9 @@ import { useLocalSearchParams } from "expo-router";
 import React from "react";
 
 export default function ListServicesScreen() {
-  const { id } = useLocalSearchParams();
-  return <ServiceScreen barberId={id as string} />;
+  const { id, barbershopId } = useLocalSearchParams<{
+    id: string;
+    barbershopId: string;
+  }>();
+  return <ServiceScreen barberId={id} barbershopId={barbershopId} />;
 }

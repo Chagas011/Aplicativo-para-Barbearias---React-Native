@@ -2,6 +2,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { useListServicesByBarber } from "@/app/hooks/queries/useListServicesByBarber";
+import LoadingPulse from "@/components/loading";
 import { ThemedText } from "@/components/themed-text";
 import CardService from "../CardService";
 import { ScheduleFormData } from "./schema";
@@ -31,7 +32,7 @@ export default function Service() {
   if (isLoading || !data) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ThemedText>Carregando...</ThemedText>
+        <LoadingPulse />
       </View>
     );
   }
