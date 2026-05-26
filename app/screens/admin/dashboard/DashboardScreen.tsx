@@ -45,9 +45,42 @@ export default function DashboardScreen() {
       <ScrollView
         contentContainerStyle={{ padding: 10, gap: 10, paddingBottom: 50 }}
       >
-        {data.barberShop.map((barbershop) => (
-          <BarbershopCard barbershop={barbershop} key={barbershop.id} />
-        ))}
+        {data.barberShop.length > 0 ? (
+          data.barberShop.map((barbershop) => (
+            <BarbershopCard barbershop={barbershop} key={barbershop.id} />
+          ))
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 24,
+              marginTop: 50,
+            }}
+          >
+            <ThemedText
+              style={{
+                color: "#9ca3af",
+                textAlign: "center",
+                fontSize: 15,
+                lineHeight: 22,
+              }}
+            >
+              Você ainda não cadastrou nenhuma barbearia.
+            </ThemedText>
+
+            <ThemedText
+              style={{
+                color: "#9ca3af",
+                marginTop: 8,
+                fontWeight: "600",
+              }}
+            >
+              toque em (Nova Barbearia) para cadastrar...
+            </ThemedText>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
